@@ -10,8 +10,6 @@ import Foundation
 
 class MessageThread: Codable, Equatable {
     
-   
-    
     init(title: String, identifier: String = UUID().uuidString, messages: [MessageThread.Message] = []) {
         self.title = title
         self.identifier = identifier
@@ -34,7 +32,6 @@ class MessageThread: Codable, Equatable {
             lhs.title == rhs.title &&
             lhs.identifier == rhs.identifier &&
             lhs.messages == rhs.messages
-        
     }
     
     
