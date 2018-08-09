@@ -68,6 +68,37 @@ class MessageThreadController {
         }.resume()
     }
     
+    func fetchMessageThreads(completion: @escaping (Error?) -> Void) {
+        let url = MessageThreadController.baseURL
+            .appendingPathExtension("json")
+        
+        URLSession.shared.dataTask(with: url) { (data , _, error) in
+            if let error = error {
+                NSLog("error fetching message threads: \(error)")
+                completion(error)
+            }
+            guard let data = data else {
+                completion(NSError())
+                return
+            }
+            
+            do {
+                let jsonDecoder = JSONDecoder()
+                let messageThreadDictionaries = try jsonDecoder.decode([String: MessageThread].self, from: data)
+                let messageThreads = messageThreadDictionaries.map({ (uuID, messageThread) -> MessageThread in
+                    messageThread
+                })
+                self.messageThreads = messageThreads
+                completion(nil)
+            } catch {
+                NSLog("Error receiving data: \(error)")
+                completion(error)
+                return
+            }
+        }.resume()
+        
+    }
+    
     // MARK: - Properties
     
     static let baseURL = URL(string: "https://lambda-message-board.firebaseio.com/")!
